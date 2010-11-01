@@ -16,25 +16,40 @@ to MOBI dictionary format, suitable for Kindle and Mobipocket Reader.
 
 === How to use ===
 
+Creation of a Kindle (MOBI) dictionary is a multi-step process.
+
+1. First, we need to convert a DSL dictionary to HTML, and we need to
+create so-called OPF file (which is needed by mobigen/kindlegen tools).
+
 In most typical case, just execute:
   
   ruby dsl2mobi -i dictionary.dsl -o result_dir
 
 This will convert the specificed dictionary.dsl file and put the results
-into result_dir directory. Then, execute:
+into result_dir directory. You'll get the main HTML file, the OPF file,
+the CSS style for the HTML, etc.
+
+For all command line switches, just execute:
+
+  ruby dsl2mobi --help
+
+2. Now, open the OPF file in Mobipocket Creator (or modify manually, which is
+less convenient). The point of this step is to adjust/correct the metadata
+(which is stored in OPF file). Things like cover image, description,
+input and output languages (these are important!), etc.
+
+Once you're satisfied with your OPF file, proceed to step 3.
+
+3. In this step the actual MOBI dictionary is being generated. Execute:
 
     mobigen dictionary.opf
 
-This command will produce the actual MOBI file that can be used on Kindle
+This command will produce the MOBI file that can be used on Kindle
 or with Mobipocket Reader. Mobigen is a command line utility that comes
 with Mobipocket Creator.
 
 Alternatively, kindlegen utility can be used, but it is much, *MUCH*
 slower, and seems to be hanging on big dictionaries, so use with care.
-
-For all command line switches, just execute:
-
-  ruby dsl2mobi --help
 
 === Notes ===
 
