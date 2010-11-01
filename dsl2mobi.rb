@@ -5,9 +5,9 @@ require 'fileutils'
 require 'optparse'
 require 'set'
 
-require 'lib/transliteration'
-require 'lib/norm_tags'
-require 'lib/templates'
+require File.expand_path('../lib/transliteration', __FILE__)
+require File.expand_path('../lib/norm_tags', __FILE__)
+require File.expand_path('../lib/templates', __FILE__)
 
 FORMS = {}
 CARDS = {}
@@ -26,7 +26,6 @@ $OUT_DIR = "."
 $IN = nil
 
 opts = OptionParser.new
-# opts.banner = "Usage: dsl2mobi [options]"
 
 opts.on("-i", "--in DSL_FILE", "convert this DSL file") { |val|
   $DSL_FILE = val
@@ -90,9 +89,6 @@ opts.separator ""
 opts.separator "Example: ruby dsl2mobi -i in.dsl -o result_dir -t forms_EN.txt"
 opts.separator "Convert in.dsl file into result_dir directory, with English wordforms"
 
-
-# my_argv = [ "-w", "WORD_FORMS.txt", "-n", "false", "-i", "in.dsl", "--htmlonly", "true", "-o", "test", "-v", "-h" ]
-
 rest = opts.parse(*ARGV)
 $stderr.puts "WARNING: Some options are not recognized: \"#{rest.join(', ')}\"" unless (rest.empty?)
 
@@ -105,11 +101,8 @@ end
 
 $stderr.puts "INFO: DSL Tags normalization: #{$NORMALIZE_TAGS}"
 
-# puts opts.to_s
-# exit
 
 class Card
-  #attr_reader :hwd, :body
   def initialize(hwd)
     @hwd, @body, @empty = hwd, [], []
     if @hwd =~ /;\s/
@@ -131,15 +124,13 @@ class Card
     end
 
     # handle headword
-    # puts break_headword
-
     hwd = clean_hwd(@hwd)
     io.puts %Q{<a name="\##{href_hwd(@hwd)}"/>}
     io.puts '<idx:entry name="word" scriptable="yes">'
     io.puts %Q{<div><font  size="6" color="#002984"><b><idx:orth>}
     io.puts clean_hwd_to_display(@hwd)
 
-    # inflections
+    # inflections (word forms)
     if hwd !~ /[-\.'\s]/
       if (FORMS[hwd]) # got some inflections
         forms = FORMS[hwd].flatten.uniq
@@ -163,10 +154,6 @@ class Card
     if (trans != hwd)
       io.puts %Q{<idx:orth value="#{trans.gsub(/"/, '')}"/>}
     end
-
-    # &nbsp; below is intentional, to avoid Kindle's bug
-    # puts "<h2>&nbsp;<b><idx:orth>#{@hwd}</idx:orth></b></h2>"
-    # puts @hwd
 
     # handle body
     @body.each { |line|
@@ -265,8 +252,6 @@ class Card
       line.gsub!(/\[c\s+(\w+)\]/) do |match|
         %Q{<font color="#{$1}">}
       end
-      # m = line.match(/^\[c (\w+)\]/)
-      # color = m[1] if m
 
       # _{_ --> [
       line.gsub!('_{_', '[')
@@ -293,17 +278,6 @@ class Card
       res << "#{sub_hwd} {\\(#{@hwd}\\)}\n"
     }
     res
-  end
-  def detect_duplicates
-    @sub_hwds.each { |sub_hwd|
-      if (card = CARDS[sub_hwd]) # hwd exists already
-        # CUSTOMIZE HERE:
-        card << "————————"
-        card << "[m1]See ^<<#{@hwd}>>[/m]\n"
-        # END OF CUSTOMIZE
-        @sub_hwds.delete(sub_hwd)
-      end
-    }
   end
   def << line
     l = line.strip
@@ -332,9 +306,6 @@ def clean_hwd(hwd)
 end
 
 def href_hwd(hwd)
-  # $stderr.puts "HWD: #{hwd.inspect}"
-  # return "" if hwd.nil?
-  # .gsub(/<[\w\/]*?>/, '').
   clean_hwd_global(hwd).gsub(/[\s\(\)'"#Â°!?]+/, '_')
 end
 
@@ -473,6 +444,7 @@ end
 
 $stderr.puts "Generating OPF: #{opf_file}"
 File.open(opf_file, "w+") do |out|
+  # TODO: get the title/langue info from DSL file
   title = "NBARS (En-Ru)"
   language = "en"
   description = ""
