@@ -1,0 +1,99 @@
+/************* DSL dictionaries **************/
+
+.dsl_u
+{
+  text-decoration: underline;
+}
+
+.dsl_m1
+{
+  text-indent: 9px;
+}
+
+.dsl_m2
+{
+  text-indent:18px;
+}
+
+.dsl_m3
+{
+  text-indent: 27px;
+}
+
+.dsl_m4
+{
+  text-indent: 36px;
+}
+
+.dsl_m5
+{
+  text-indent: 45px;
+}
+
+.dsl_m6
+{
+  text-indent: 54px;
+}
+
+.dsl_m7
+{
+  text-indent: 63px;
+}
+
+.dsl_m8
+{
+  text-indent: 72px;
+}
+
+.dsl_m9
+{
+  text-indent: 81px;
+}
+
+.dsl_ex
+{
+  color: #595959;
+}
+
+.dsl_p
+{
+  color: green;
+  font-style: italic;
+  cursor: default;
+}
+
+.dsl_t
+{
+  font-weight: bold;
+}
+
+.dsl_headwords
+{
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.dsl_headwords p
+{
+  font-weight: bold;
+  font-size: 15px;
+  margin: 0;
+}
+
+.dsl_definition p
+{
+  margin: 0;
+}
+
+.separator
+{
+  color: #009999;
+  background-color: #009999;
+  height: 10px;
+}
+
+A:link
+{
+  text-decoration: underline
+}
