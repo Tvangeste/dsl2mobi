@@ -64,5 +64,5 @@ slower, and seems to be hanging on big dictionaries, so use with care.
 
 === License ===
 
-Dsl2Mobi s a copyrighted free and open source software, that can be
+Dsl2Mobi is a copyrighted free and open source software, that can be
 distributed under Ruby or GPL License (see LICENSE.txt).
