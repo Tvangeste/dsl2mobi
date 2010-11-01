@@ -38,4 +38,11 @@ For all command line switches, just execute:
 
 === Notes ===
 
-The DSL dictionary *MUST* *BE* in UTF-8 format!!!
+1. The DSL dictionary *MUST* *BE* in UTF-8 format!!! Typically, the DSL
+   dictionaries come in UCS-2 encoding. So, in most cases, the DSL file
+   needs to be converted to proper UTF-8 first.
+
+2. It is assumed that the input dictionary is a fully valid DSL dictionary,
+   without any errors, duplicates, etc. Essentially, the DSL dictionary
+   should be in such a conditian that it could be compiled by Lingvo compiler
+   without any errors or warnings.
