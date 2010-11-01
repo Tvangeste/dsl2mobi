@@ -61,3 +61,8 @@ slower, and seems to be hanging on big dictionaries, so use with care.
    without any errors, duplicates, etc. Essentially, the DSL dictionary
    should be in such a conditian that it could be compiled by Lingvo compiler
    without any errors or warnings.
+
+=== License ===
+
+Dsl2Mobi s a copyrighted free and open source software, that can be
+distributed under Ruby or GPL License (see LICENSE.txt).
