@@ -118,8 +118,8 @@ class Card
 
   def print_out(io)
     if (@body.empty?)
-      $stderr.puts "ERROR: Original file contains multiple headwords fro the same card: #{@hwd}"
-      $stderr.puts "Make sure that the only one headword for each card"
+      $stderr.puts "ERROR: Original file contains multiple headwords for the same card: #{@hwd}"
+      $stderr.puts "Make sure that there is only one headword for each card no the DSL!"
       exit
     end
 
