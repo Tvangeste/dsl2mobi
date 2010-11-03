@@ -48,6 +48,11 @@ This command will produce the MOBI file that can be used on Kindle
 or with Mobipocket Reader. Mobigen is a command line utility that comes
 with Mobipocket Creator.
 
+You could also use the following command line switch to produce much
+smaller, better compressed MOBI file, but it'll take longer to produce it:
+
+    mobigen -c2 dictionary.opf
+
 Alternatively, kindlegen utility can be used, but it is much, *MUCH*
 slower, and seems to be hanging on big dictionaries, so use with care.
 
