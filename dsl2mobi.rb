@@ -357,7 +357,7 @@ File.open($DSL_FILE) do |f|
 end
 
 def get_base_name
-  $DSL_FILE.gsub(/(\..*)*\.dsl$/i, '')
+  File.basename($DSL_FILE).gsub(/(\..*)*\.dsl$/i, '')
 end
 
 $stderr.puts "INFO: Generating only a small sample..." if $FAST
