@@ -1,0 +1,33 @@
+Here's a list of things I'd like to be implemented/fixed sooner or later:
+
+1. DSL with multiple headwords cannot be converted.
+
+For example, if there is a card in DSL file with two headwords,
+the converter will refuse to deal with it.
+
+headword1
+headword2
+  The body of the card.
+
+The workaround currently is to compile the DSL with Lingvo Compiler,
+and then to decompile it back. The compiler will expand the card into two:
+
+headword1
+  The body of the card.
+
+headword2
+  The body of the card.
+
+2. DSL Subentries are not properly handled at all at the moment.
+
+Subentries in DSL cards start with @ sign. See Lingvo Help on DSL Subentries
+for more info.
+
+Typically, thera not that many dictionaries with subentries, but still.
+
+3. Maybe, the converter should be able to read and proccess the DSL not
+only in UTF-8 format, but in UTF-16 format. UTF-16 is the default format
+for the DSL dictionaries, and Lingvo (de-)compiler understands only UTF-16.
+
+Implementing this would reduce user's actions during conversion, there
+will be no need to perform manual conversion.
