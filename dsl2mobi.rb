@@ -19,6 +19,7 @@ $VERSION = '0.3-dev'
 $FAST = false
 $FORCE = false
 $NORMALIZE_TAGS = true
+$TRANSLITERATE = true
 $count = 0
 $WORD_FORMS_FILE = nil
 $DSL_FILE = nil
@@ -62,7 +63,11 @@ opts.on("-w FILE", "--wordforms FILE", "use the word forms from this file") { |v
 opts.separator ""
 opts.separator "Advanced options:"
 
-opts.on("-n true/false", "--normtags true/false", "normalize DSL tags (default: true)") { |val|
+opts.on("-l", "--translit true/false", "transliterate Russian headwords (default: true)") { |val|
+  $TRANSLITERATE = !!(val =~ /(true|1|on)/i)
+}
+
+opts.on("-n", "--normtags true/false", "normalize DSL tags (default: true)") { |val|
   $NORMALIZE_TAGS = !!(val =~ /(true|1|on)/i)
   $stderr.puts "DSL tags normalization: #{$NORMALIZE_TAGS}"
 }
@@ -95,8 +100,9 @@ opts.on("-h", "--help", "print help") {
 }
 
 opts.separator ""
-opts.separator "Example: ruby dsl2mobi.rb -i in.dsl -o result_dir -w forms-EN.txt"
-opts.separator "Convert in.dsl file into result_dir directory, with English wordforms"
+opts.separator "Example:"
+opts.separator "    ruby dsl2mobi.rb -i in.dsl -o result_dir -w forms-EN.txt"
+opts.separator "    Converts in.dsl file into result_dir directory, with English wordforms."
 
 rest = opts.parse(*ARGV)
 $stderr.puts "WARNING: Some options are not recognized: \"#{rest.join(', ')}\"" unless (rest.empty?)
@@ -108,6 +114,7 @@ unless $DSL_FILE
   exit
 end
 
+$stderr.puts "INFO: Headwords transliteration: #{$TRANSLITERATE}"
 $stderr.puts "INFO: DSL Tags normalization: #{$NORMALIZE_TAGS}"
 
 
@@ -159,9 +166,11 @@ class Card
 
     io.puts "</idx:orth></b></font></div>"
 
-    trans = transliterate(hwd)
-    if (trans != hwd)
-      io.puts %Q{<idx:orth value="#{trans.gsub(/"/, '')}"/>}
+    if ($TRANSLITERATE)
+        trans = transliterate(hwd)
+        if (trans != hwd)
+          io.puts %Q{<idx:orth value="#{trans.gsub(/"/, '')}"/>}
+        end
     end
 
     # handle body
