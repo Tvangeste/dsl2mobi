@@ -186,6 +186,17 @@ class Card
       indent = 0
       m = line.match(/^\[m(\d+)\]/)
       indent = m[1] if m
+      
+      # < > --> &lt; &gt;
+      line.gsub!('<', '&lt;')
+      line.gsub!('>', '&gt;')
+
+      # quote any symbol if there is an \ immedately before
+      line.gsub!(/\\(.)/, '+_-_+\1+_-_+')
+
+      # \[ and \] -> something else, without [ and ]
+      line.gsub!('+_-_+[+_-_+', '+_-_+LBRACKET+_-_+')
+      line.gsub!('+_-_+]+_-_+', '+_-_+RBRACKET+_-_+')
 
       # \[ --> _{_
       line.gsub!('\[', '_{_')
@@ -208,7 +219,7 @@ class Card
         file_name = $1
 
         # handle images
-        if file_name =~ /.(jpg|jpeg|bmp|gif)$/
+        if file_name =~ /.(jpg|jpeg|bmp|gif|tif|tiff)$/
           # hspace="0" align="absbottom" hisrc=
           # %Q{<img hspace="0" vspace="0" align="middle" src="#{$1}"/>}
           %Q{<img hspace="0" hisrc="#{file_name}"/>}
@@ -282,6 +293,13 @@ class Card
       # _{_ --> [
       line.gsub!('_{_', '[')
       line.gsub!('_}_', ']')
+
+      # unquote \[ and \]
+      line.gsub!('+_-_+LBRACKET+_-_+', '[')
+      line.gsub!('+_-_+RBRACKET+_-_+', ']')
+
+      # unquote any symbol when \ is before it
+      line.gsub!('+_-_+', '')
 
       # handle ref and {{ }} tags (references)
       line.gsub!(/(?:↑\s*)?(?:\[ref\]|\{\{)(.*?)(?:\[\/ref\]|\}\})/) do |match|

@@ -48,7 +48,7 @@ module Normalizer
             @pos += 1
             break
           else
-           $stderr.puts "ERROR: unmatched right bracket at pos #{@pos}, state #{state}"
+           $stderr.puts "ERROR: unmatched right bracket at pos #{@pos}, state #{state}, string #{@str}"
            exit 1
           end
         else
