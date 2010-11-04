@@ -95,7 +95,7 @@ opts.on("-h", "--help", "print help") {
 }
 
 opts.separator ""
-opts.separator "Example: ruby dsl2mobi -i in.dsl -o result_dir -t forms_EN.txt"
+opts.separator "Example: ruby dsl2mobi.rb -i in.dsl -o result_dir -w forms-EN.txt"
 opts.separator "Convert in.dsl file into result_dir directory, with English wordforms"
 
 rest = opts.parse(*ARGV)

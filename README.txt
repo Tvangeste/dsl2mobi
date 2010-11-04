@@ -23,7 +23,7 @@ create so-called OPF file (which is needed by mobigen/kindlegen tools).
 
 In most typical case, just execute:
   
-  ruby dsl2mobi -i dictionary.dsl -o result_dir
+  ruby dsl2mobi.rb -i dictionary.dsl -o result_dir
 
 This will convert the specificed dictionary.dsl file and put the results
 into result_dir directory. You'll get the main HTML file, the OPF file,
@@ -31,7 +31,7 @@ the CSS style for the HTML, etc.
 
 For all command line switches, just execute:
 
-  ruby dsl2mobi --help
+  ruby dsl2mobi.rb --help
 
 2. Now, open the OPF file in Mobipocket Creator (or modify manually, which is
 less convenient). The point of this step is to adjust/correct the metadata
