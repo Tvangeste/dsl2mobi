@@ -351,9 +351,16 @@ in_header = true
 File.open($DSL_FILE) do |f|
   while (line = f.gets)         # read every line
     if (first)
-      # strip UTF-8 BOM, if it's there
-      if line[0, 3] == "\xEF\xBB\xBF"
+      # strip BOM, if it's there
+      if line[0, 3] == "\xEF\xBB\xBF" # UTF-8
         line = line[3, line.size - 3]
+      elsif line[0, 2] == "\xFE\xFF"  # UTF-16BE
+        $stderr.puts "ERROR: Wrong DSL encoding: UTF-16BE"
+        exit(1)
+      elsif line[0, 2] == "\xFF\xFE"  # UTF-16LE
+        $stderr.puts "ERROR: Currently not supported DSL encoding: UTF-16LE"
+        $stderr.puts "INFO: Convert the DSL file into UTF-8 before running this script."
+        exit(1)
       end
       first = false
     end
