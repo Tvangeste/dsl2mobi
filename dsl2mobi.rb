@@ -20,6 +20,7 @@ $FAST = false
 $FORCE = false
 $NORMALIZE_TAGS = true
 $TRANSLITERATE = true
+$HREF_ARROWS = true
 $count = 0
 $WORD_FORMS_FILE = nil
 $DSL_FILE = nil
@@ -72,6 +73,11 @@ opts.on("-n", "--normtags true/false", "normalize DSL tags (default: true)") { |
   $stderr.puts "DSL tags normalization: #{$NORMALIZE_TAGS}"
 }
 
+opts.on("-a", "--refarrow true/false", "put arrows before links (default: true)") { |val|
+  $HREF_ARROWS = !!(val =~ /(true|1|on)/i)
+  $stderr.puts "Reference arrows: #{$HREF_ARROWS}"
+}
+
 opts.on("-t", "--htmlonly true/false", "produce HTML only (default: false)") { |val|
   $HTML_ONLY = !!(val =~ /(true|1|on)/i)
   $stderr.puts "Generate HTML only: #{$HTML_ONLY}"
@@ -116,7 +122,9 @@ end
 
 $stderr.puts "INFO: Headwords transliteration: #{$TRANSLITERATE}"
 $stderr.puts "INFO: DSL Tags normalization: #{$NORMALIZE_TAGS}"
+$stderr.puts "INFO: Reference arrows in HTML: #{$HREF_ARROWS}"
 
+$ARROW = ($HREF_ARROWS ? "↑" : "")
 
 class Card
   def initialize(hwd)
@@ -275,12 +283,10 @@ class Card
       line.gsub!('_{_', '[')
       line.gsub!('_}_', ']')
 
-      # remove ref tags
-      #line.gsub!(/\[ref\](.*?)\[\/ref\]/, %Q{↑ <a href="\##{href_hwd($1)}">})
-      line.gsub!(/(?:↑\s*)?\[ref\](.*?)\[\/ref\]/) do |match|
-        %Q{↑ <a href="\##{href_hwd($1)}">#{$1}</a>}
+      # handle ref and {{ }} tags (references)
+      line.gsub!(/(?:↑\s*)?(?:\[ref\]|\{\{)(.*?)(?:\[\/ref\]|\}\})/) do |match|
+        %Q{#{$ARROW} <a href="\##{href_hwd($1)}">#{$1}</a>}
       end
-      #line.gsub!('[/ref]', '</a>')
 
       io.puts %Q{<div class="dsl_m#{indent}">#{line}</div>}
     }
