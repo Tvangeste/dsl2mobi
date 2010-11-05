@@ -186,10 +186,6 @@ class Card
       indent = 0
       m = line.match(/^\[m(\d+)\]/)
       indent = m[1] if m
-      
-      # < > --> &lt; &gt;
-      line.gsub!('<', '&lt;')
-      line.gsub!('>', '&gt;')
 
       # quote any symbol if there is an \ immedately before
       line.gsub!(/\\(.)/, '+_-_+\1+_-_+')
@@ -198,7 +194,18 @@ class Card
       line.gsub!('+_-_+[+_-_+', '+_-_+LBRACKET+_-_+')
       line.gsub!('+_-_+]+_-_+', '+_-_+RBRACKET+_-_+')
 
-      # \[ --> _{_
+      # delete {{comments}}
+      line.gsub!(/\{\{.*?\}\}/, '')
+
+      # <<link>> --> [ref]link[/ref]
+      line.gsub!('<<', '[ref]')
+      line.gsub!('>>', '[/ref]')
+
+      # < and > --> &lt; and &gt;
+      line.gsub!('<', '&lt;')
+      line.gsub!('>', '&gt;')
+
+      # \[ and \] --> _{_ and _}_
       line.gsub!('\[', '_{_')
       line.gsub!('\]', '_}_')
 
@@ -302,7 +309,7 @@ class Card
       line.gsub!('+_-_+', '')
 
       # handle ref and {{ }} tags (references)
-      line.gsub!(/(?:↑\s*)?(?:\[ref\]|\{\{)(.*?)(?:\[\/ref\]|\}\})/) do |match|
+      line.gsub!(/(?:↑\s*)?\[ref\](.*?)\[\/ref\]/) do |match|
         %Q{#{$ARROW} <a href="\##{href_hwd($1)}">#{$1}</a>}
       end
 
