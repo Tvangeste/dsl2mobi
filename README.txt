@@ -5,14 +5,18 @@ to MOBI dictionary format, suitable for Kindle and Mobipocket Reader.
 
 === Dependencies ===
 
-1. Ruby 1.8.7:
+1. Ruby 1.8.7 (to run this conversion script):
    http://www.ruby-lang.org/en/downloads/
 
    For Windows, the following package is recommended:
    http://rubyforge.org/frs/download.php/72085/rubyinstaller-1.8.7-p302.exe
 
-2. Mobipocket creator:
+2. Mobipocket creator (to fine-tune the OPF file):
    http://www.mobipocket.com/en/DownloadSoft/DownloadCreator.asp
+
+3. Mobigen or KindleGen (to generate the final MOBI file):
+   Mobigen: http://www.mobipocket.com/soft/prcgen/mobigen.zip
+   KindleGen: http://www.amazon.com/gp/feature.html?ie=UTF8&docId=1000234621
 
 === How to use ===
 
