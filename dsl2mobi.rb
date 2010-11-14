@@ -15,7 +15,7 @@ CARDS = {}
 HWDS = Set.new
 cards_list = []
 
-$VERSION = '0.4'
+$VERSION = '0.5-dev'
 $FAST = false
 $FORCE = false
 $NORMALIZE_TAGS = true
@@ -147,11 +147,11 @@ class Card
       exit
     end
 
-    # handle headword
     hwd = clean_hwd(@hwd)
     io.puts %Q{<a name="\##{href_hwd(@hwd)}"/>}
     io.puts '<idx:entry name="word" scriptable="yes">'
-    io.puts %Q{<div><font  size="6" color="#002984"><b><idx:orth>}
+    # Two &#xFEEF; are intentional here, this is a workaround for Kindle bug:
+    io.print %Q{&#xFEFF;&#xFEFF;<font  size="6" color="#002984"><b><idx:orth>}
     io.puts clean_hwd_to_display(@hwd)
 
     # inflections (word forms)
@@ -172,7 +172,7 @@ class Card
       end
     end
 
-    io.puts "</idx:orth></b></font></div>"
+    io.puts "</idx:orth></b></font>"
 
     if ($TRANSLITERATE)
         trans = transliterate(hwd)
