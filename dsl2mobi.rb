@@ -309,8 +309,9 @@ class Card
       line.gsub!('+_-_+', '')
 
       # handle ref and {{ }} tags (references)
-      line.gsub!(/(?:↑\s*)?\[ref\](.*?)\[\/ref\]/) do |match|
-        %Q{#{$ARROW} <a href="\##{href_hwd($1)}">#{$1}</a>}
+      line.gsub!(/(?:↑\s*)?\[ref(?:\s+dict="(.*?)")?\s*\](.*?)\[\/ref\]/) do |match|
+        # $stderr.puts "#{$1} -- #{$2}"
+        %Q{#{$ARROW} <a href="\##{href_hwd($2)}">#{$2}</a>}
       end
 
       io.puts %Q{<div class="dsl_m#{indent}">#{line}</div>}
