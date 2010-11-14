@@ -1,6 +1,8 @@
-Here's a list of things I'd like to be implemented/fixed sooner or later:
+﻿Here's a list of things I'd like to be implemented/fixed sooner or later:
 
-1. DSL with multiple headwords cannot be converted.
+Priorities: P1 - high, P2 - medium, P3 - low
+
+1. (P2, Workaround exists) DSL with multiple headwords cannot be converted.
 
 For example, if there is a card in DSL file with two headwords,
 the converter will refuse to deal with it.
@@ -18,16 +20,29 @@ headword1
 headword2
   The body of the card.
 
-2. DSL Subentries are not properly handled at all at the moment.
+2. (P3, rare feature) DSL Subentries are not properly handled at all at the moment.
 
 Subentries in DSL cards start with @ sign. See Lingvo Help on DSL Subentries
 for more info.
 
 Typically, thera not that many dictionaries with subentries, but still.
 
-3. Maybe, the converter should be able to read and proccess the DSL not
+3. (P1) Maybe, the converter should be able to read and proccess the DSL not
 only in UTF-8 format, but in UTF-16 format. UTF-16 is the default format
 for the DSL dictionaries, and Lingvo (de-)compiler understands only UTF-16.
 
 Implementing this would reduce user's actions during conversion, there
 will be no need to perform manual conversion.
+
+4. (P3) Put capitalized and/or downcased headwords into cards.
+
+This is useful for, say, Russian dictionaries. When "Lenin" card
+is present, then it is impossible to find it while searching "lenin".
+
+This is clearly a Kindle limitation that we might need a workaround for.
+
+5. (P2) Ability to merge multiple dictionaries into single über-dictionary.
+
+Since Kindle alows to use only a single dictionary as the main one, the
+ability to merge multiple dictionaries into one is quite often
+requested feature.
