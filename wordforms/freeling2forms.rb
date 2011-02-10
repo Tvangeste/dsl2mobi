@@ -6,6 +6,7 @@ File.open('ES.data.txt') do |f|
   f.each do |line|
     count += 1
     data = line.split(/\s+/)
+    next if data.size < 2
     (FORMS_DATA[data[1]] ||= []) << data[0]
     # break if count == 100
   end
