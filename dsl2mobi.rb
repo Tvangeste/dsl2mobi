@@ -150,8 +150,7 @@ class Card
     hwd = clean_hwd(@hwd)
     io.puts %Q{<a name="\##{href_hwd(@hwd)}"/>}
     io.puts '<idx:entry name="word" scriptable="yes">'
-    # Two &#xFEEF; are intentional here, this is a workaround for Kindle bug:
-    io.print %Q{\xEF\xBB\xBF\xEF\xBB\xBF<font size="6" color="#002984"><b><idx:orth>}
+    io.print %Q{<font size="6" color="#002984"><b><idx:orth>}
     io.puts clean_hwd_to_display(@hwd)
 
     # inflections (word forms)
