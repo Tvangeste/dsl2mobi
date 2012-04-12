@@ -15,7 +15,7 @@ CARDS = {}
 HWDS = Set.new
 cards_list = []
 
-$VERSION = '0.6'
+$VERSION = '0.8'
 $FAST = false
 $FORCE = false
 $NORMALIZE_TAGS = true
