@@ -134,10 +134,11 @@ class Card
     else
       @sub_hwds = []
     end
-    if @hwd =~ /\{\\\(/
-      $stderr.puts "ERROR: Can't handle headwords with brackets: #{@hwd}"
-      exit
-    end
+    # TODO: properly handle headwords with () and {}
+    #if @hwd =~ /\{\\\(/
+    #  $stderr.puts "WARN: Can't handle headwords with brackets: #{@hwd}"
+    #  exit
+    #end
   end
 
   def print_out(io)
@@ -341,7 +342,8 @@ end
 def clean_hwd_global(hwd)
   hwd.gsub('\{', '_<_').gsub('\}', '_>_').
       gsub(/\{.*?\}/, '').
-      gsub('_<_', '\{').gsub('_>_', '\}')
+      gsub('_<_', '{').gsub('_>_', '}').
+      gsub('\(', '(').gsub('\)', ')')
 end
 
 def clean_hwd_to_display(hwd)

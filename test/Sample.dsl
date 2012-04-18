@@ -2,6 +2,21 @@
 #INDEX_LANGUAGE	"English"
 #CONTENTS_LANGUAGE	"Russian"
 
+hwd1 (with brackets)
+  hwd1 (with brackets)
+
+hwd2 {with other brackets}
+  hwd2 {with other brackets}
+
+hwd3 \(with quoted brackets\)
+  hwd3 \\(with quoted brackets\\)
+
+hwd4 \{with quoted other brackets\}
+  hwd \\{with quoted other brackets\\}
+
+hwd5 {\(with optional quoted brackets\)}
+  hwd {\\(with optional quoted brackets\\)}
+
 typical
     \[`ærı\] [p][i][c][com]n[/com][/c][/i][/p]
     [m1][trn]1. [p][i][c][com]прост.[/com][/c][/i][/p] = Harry[/m]
