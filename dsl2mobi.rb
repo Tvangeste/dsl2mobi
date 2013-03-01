@@ -33,7 +33,8 @@ $LANG_MAP = {
   "English" => "en",
   "Russian" => "ru",
   "GermanNewSpelling" => "de",
-  "French" => "fr"
+  "French" => "fr",
+  "Polish" => "pl"
 }
 
 opts = OptionParser.new
@@ -128,12 +129,7 @@ $ARROW = ($HREF_ARROWS ? "↑" : "")
 
 class Card
   def initialize(hwd)
-    @hwd, @body, @empty = hwd, [], []
-    if @hwd =~ /;\s/
-      @sub_hwds = hwd.split(/\s*;\s*/)
-    else
-      @sub_hwds = []
-    end
+    @hwds, @body, @empty = [hwd], [], []
     # TODO: properly handle headwords with () and {}
     #if @hwd =~ /\{\\\(/
     #  $stderr.puts "WARN: Can't handle headwords with brackets: #{@hwd}"
@@ -141,18 +137,29 @@ class Card
     #end
   end
 
+  def add_hwd(h)
+     @hwds << h
+  end
+  
   def print_out(io)
+    @hwds.each { |hwd|
+      print_out_single(hwd, io)
+    }
+  end
+  
+  def print_out_single(hwd, io)
     if (@body.empty?)
-      $stderr.puts "ERROR: Original file contains multiple headwords for the same card: #{@hwd}"
+      $stderr.puts "ERROR: Body empty, possibly original file contains multiple headwords for the same card: #{hwd}"
       $stderr.puts "Make sure that there is only one headword for each card no the DSL!"
       exit
     end
 
-    hwd = clean_hwd(@hwd)
-    io.puts %Q{<a name="\##{href_hwd(@hwd)}"/>}
+    io.puts %Q{<a name="\##{href_hwd(hwd)}"/>}
     io.puts '<idx:entry name="word" scriptable="yes">'
     io.print %Q{<font size="6" color="#002984"><b><idx:orth>}
-    io.puts clean_hwd_to_display(@hwd)
+    io.puts clean_hwd_to_display(hwd)
+    
+    hwd = clean_hwd(hwd)
 
     # inflections (word forms)
     if hwd !~ /[-\.'\s]/
@@ -183,6 +190,7 @@ class Card
 
     # handle body
     @body.each { |line|
+      line = line.dup
       indent = 0
       m = line.match(/^\[m(\d+)\]/)
       indent = m[1] if m
@@ -322,13 +330,7 @@ class Card
     io.puts %Q{<div>\n  <img hspace="0" vspace="0" align="middle" src="padding.gif"/>}
     io.puts %Q{  <table width="100%" bgcolor="#992211"><tr><th widht="100%" height="2px"></th></tr></table>\n</div>}
   end
-  def break_headword
-    res = "#{@hwd}\n"
-    @sub_hwds.each { |sub_hwd|
-      res << "#{sub_hwd} {\\(#{@hwd}\\)}\n"
-    }
-    res
-  end
+
   def << line
     l = line.strip
     if (l.empty?)
@@ -343,7 +345,7 @@ def clean_hwd_global(hwd)
   hwd.gsub('\{', '_<_').gsub('\}', '_>_').
       gsub(/\{.*?\}/, '').
       gsub('_<_', '{').gsub('_>_', '}').
-      gsub('\(', '(').gsub('\)', ')')
+      gsub('\(', '(').gsub('\)', ')').strip
 end
 
 def clean_hwd_to_display(hwd)
@@ -445,6 +447,7 @@ end
 
 card = nil
 first = true
+ishwd = false
 File.open($DSL_FILE) do |f|
 
   $stderr.puts "Generating HTML: #{out_file}"
@@ -472,17 +475,23 @@ File.open($DSL_FILE) do |f|
       if (line =~ /^[^\t\s]/)   # is headword?
         hwd = line.strip        # strip \n\r from the end
         if (CARDS[hwd])
-          $stderr.puts "ERROR: Original file contains diplicates: #{hwd}"
-          exit
+            $stderr.puts "ERROR: Original file contains diplicates: #{hwd} #{CARDS[hwd]}"
+            exit
         end
-        card.print_out(out) if card
-        $count += 1
-        break if ($count == 1000 && $FAST)
-        card = Card.new(hwd)
-        #CARDS[hwd] = card
-        #cards_list << card
+        if ishwd                # is previous line headword?
+          card.add_hwd(hwd) unless hwd.empty? # add alternate headwords
+        else
+          card.print_out(out) if card # print out the previous card
+          ishwd = true # current line is headword  
+          $count += 1
+          break if ($count == 1000 && $FAST)
+          card = Card.new(hwd)
+          #CARDS[hwd] = card
+          #cards_list << card
+        end
       else
-        card << line if card
+        ishwd = false # the current line is not headword
+        card << line if card && line
       end
     end
 
