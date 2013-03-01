@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
 $KCODE='u'
 
 require 'date'
@@ -10,12 +13,17 @@ require File.expand_path('../lib/transliteration', __FILE__)
 require File.expand_path('../lib/norm_tags', __FILE__)
 require File.expand_path('../lib/templates', __FILE__)
 
+IS_RUBY2 = false
+if (RUBY_VERSION =~ /^(1\.9|2\.0)/)
+  IS_RUBY2 = true
+end
+
 FORMS = {}
 CARDS = {}
 HWDS = Set.new
 cards_list = []
 
-$VERSION = '0.9'
+$VERSION = '1.0-dev'
 $FAST = false
 $FORCE = false
 $NORMALIZE_TAGS = true
@@ -366,9 +374,56 @@ def transliterate(hwd)
   Russian::Transliteration.transliterate(hwd)
 end
 
+def binary(str)
+  if (IS_RUBY2)
+    str.force_encoding("binary")
+  else
+    str
+  end
+end
+
+def detect_encoding(filename)
+  f = File.open(filename, "rb");
+  bom = f.read(3)
+  f.close
+  
+  if bom == binary("\xEF\xBB\xBF") # UTF-8
+    #$stderr.puts "DETECTED: UTF-8"
+    return "UTF-8"
+  elsif bom[0, 2] == binary("\xFE\xFF")  # UTF-16BE
+    #$stderr.puts "DETECTED: UTF-16BE"
+    return "UTF-16BE"
+  elsif bom[0, 2] == binary("\xFF\xFE")  # UTF-16LE
+    #$stderr.puts "DETECTED: UTF-16LE"
+    return "UTF-16LE"
+  else
+    # By default, assume UTF-8 without BOM.
+    $stderr.puts "WARN: Assuming UTF-8 encoding for: #{filename}"
+    return "UTF-8"
+
+    # $stderr.puts "Cannot determine encoding for #{filename}"
+    # exit(1)
+  end
+end
+
+def get_read_mode(filename)
+  encoding = detect_encoding(filename)
+  read_mode = "r";
+  if (IS_RUBY2)
+    read_mode = "r:bom|#{encoding}:UTF-8"
+  else
+    if (encoding != "UTF-8")
+      $stderr.puts "ERROR: Wrong encoding for #{filename}: #{encoding}.\nUpgrade to Ruby 2.0 or use UTF-8."
+      exit(5)
+    end
+  end
+  read_mode
+end
+
 if ($WORD_FORMS_FILE)
   forms_size = 0
-  File.open($WORD_FORMS_FILE) do |f|
+  forms_read_mode = get_read_mode($WORD_FORMS_FILE)
+  File.open($WORD_FORMS_FILE, forms_read_mode) do |f|
     f.each do |l|
       l.strip!
       stem, forms = l.split(':')
@@ -392,9 +447,13 @@ end
 # as well as title, and in- and out- languages.
 first = true
 in_header = true
-File.open($DSL_FILE) do |f|
+
+read_mode = get_read_mode($DSL_FILE)
+# $stderr.puts "READ_MODE: #{read_mode}"
+
+File.open($DSL_FILE, read_mode) do |f|
   while (line = f.gets)         # read every line
-    if (first)
+    if (first && !IS_RUBY2)
       # strip BOM, if it's there
       if line[0, 3] == "\xEF\xBB\xBF" # UTF-8
         line = line[3, line.size - 3]
@@ -406,8 +465,9 @@ File.open($DSL_FILE) do |f|
         $stderr.puts "INFO: Convert the DSL file into UTF-8 before running this script."
         exit(1)
       end
-      first = false
     end
+    first = false
+
     if line =~ /^#/           # ignore comments
       if in_header            # but first, read the header
           res = line.scan(/^#NAME\s+"(.*)"/i)[0]
@@ -448,7 +508,7 @@ end
 card = nil
 first = true
 ishwd = false
-File.open($DSL_FILE) do |f|
+File.open($DSL_FILE, read_mode) do |f|
 
   $stderr.puts "Generating HTML: #{out_file}"
   File.open(out_file, "w+") do |out|
