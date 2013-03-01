@@ -23,7 +23,7 @@ CARDS = {}
 HWDS = Set.new
 cards_list = []
 
-$VERSION = '1.0-dev'
+$VERSION = '1.0'
 $FAST = false
 $FORCE = false
 $NORMALIZE_TAGS = true
