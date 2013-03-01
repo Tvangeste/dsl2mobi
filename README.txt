@@ -5,11 +5,11 @@ to MOBI dictionary format, suitable for Kindle and Mobipocket Reader.
 
 === Dependencies ===
 
-1. Ruby 1.8.7 (to run this conversion script):
+1. Ruby 1.8.7 or later, Ruby 2.0 is recommended:
    http://www.ruby-lang.org/en/downloads/
 
    For Windows, the following package is recommended:
-   http://rubyforge.org/frs/download.php/72085/rubyinstaller-1.8.7-p302.exe
+   http://rubyforge.org/frs/download.php/76804/rubyinstaller-2.0.0-p0.exe
 
 2. Mobipocket creator (to fine-tune the OPF file):
    http://www.mobipocket.com/en/DownloadSoft/DownloadCreator.asp
@@ -62,13 +62,9 @@ slower, and seems to be hanging on big dictionaries, so use with care.
 
 === Notes ===
 
-1. The DSL dictionary *MUST* *BE* in UTF-8 format!!! Typically, the DSL
-   dictionaries come in UCS-2 encoding. So, in most cases, the DSL file
-   needs to be converted to proper UTF-8 first.
-
-2. It is assumed that the input dictionary is a fully valid DSL dictionary,
+1. It is assumed that the input dictionary is a fully valid DSL dictionary,
    without any errors, duplicates, etc. Essentially, the DSL dictionary
-   should be in such a conditian that it could be compiled by Lingvo compiler
+   should be in such a condition that it can be compiled by the Lingvo compiler
    without any errors or warnings.
 
 === License ===
