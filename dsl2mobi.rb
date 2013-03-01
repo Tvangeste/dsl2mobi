@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-$KCODE='u'
+if (RUBY_VERSION =~ /^(1\.9|2\.0)/)
+  IS_RUBY2 = true
+else
+  IS_RUBY2 = false
+  $KCODE='u'
+end
 
 require 'date'
 require 'erb'
@@ -12,11 +17,6 @@ require 'set'
 require File.expand_path('../lib/transliteration', __FILE__)
 require File.expand_path('../lib/norm_tags', __FILE__)
 require File.expand_path('../lib/templates', __FILE__)
-
-IS_RUBY2 = false
-if (RUBY_VERSION =~ /^(1\.9|2\.0)/)
-  IS_RUBY2 = true
-end
 
 FORMS = {}
 CARDS = {}
