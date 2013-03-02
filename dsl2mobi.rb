@@ -23,7 +23,7 @@ CARDS = {}
 HWDS = Set.new
 cards_list = []
 
-$VERSION = '1.0'
+$VERSION = '1.1'
 $FAST = false
 $FORCE = false
 $NORMALIZE_TAGS = true
@@ -410,7 +410,7 @@ def get_read_mode(filename)
   encoding = detect_encoding(filename)
   read_mode = "r";
   if (IS_RUBY2)
-    read_mode = "r:bom|#{encoding}:UTF-8"
+    read_mode = "rb:bom|#{encoding}:UTF-8"
   else
     if (encoding != "UTF-8")
       $stderr.puts "ERROR: Wrong encoding for #{filename}: #{encoding}.\nUpgrade to Ruby 2.0 or use UTF-8."
@@ -449,7 +449,7 @@ first = true
 in_header = true
 
 read_mode = get_read_mode($DSL_FILE)
-# $stderr.puts "READ_MODE: #{read_mode}"
+$stderr.puts "READ_MODE: #{read_mode}"
 
 File.open($DSL_FILE, read_mode) do |f|
   while (line = f.gets)         # read every line
