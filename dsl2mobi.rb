@@ -23,11 +23,12 @@ CARDS = {}
 HWDS = Set.new
 cards_list = []
 
-$VERSION = '1.1'
+$VERSION = '1.2-dev'
 $FAST = false
 $FORCE = false
 $NORMALIZE_TAGS = true
 $TRANSLITERATE = true
+$PENYIN = false
 $HREF_ARROWS = true
 $count = 0
 $WORD_FORMS_FILE = nil
@@ -42,7 +43,8 @@ $LANG_MAP = {
   "Russian" => "ru",
   "GermanNewSpelling" => "de",
   "French" => "fr",
-  "Polish" => "pl"
+  "Polish" => "pl",
+  "Chinese" => 'zh'
 }
 
 opts = OptionParser.new
@@ -77,6 +79,14 @@ opts.on("-l", "--translit true/false", "transliterate Russian headwords (default
   $TRANSLITERATE = !!(val =~ /(true|1|on)/i)
 }
 
+opts.on("-p", "--penyin true/false", "transliterate Chinese headwords (default: false)") { |val|
+  $PENYIN = !!(val =~ /(true|1|on)/i)
+  if $PENYIN    
+    $LOAD_PATH << File.expand_path('../lib/chinese_pinyin/lib/', __FILE__)
+    require 'chinese_pinyin'
+  end
+}
+
 opts.on("-n", "--normtags true/false", "normalize DSL tags (default: true)") { |val|
   $NORMALIZE_TAGS = !!(val =~ /(true|1|on)/i)
   $stderr.puts "DSL tags normalization: #{$NORMALIZE_TAGS}"
@@ -105,7 +115,7 @@ opts.separator "Common options:"
 
 opts.on("-v", "--version", "print version") {
   puts "Dsl2Mobi Converter, ver. #{$VERSION}"
-  puts "Copyright (C) 2010 VVSiz"
+  puts "Copyright (C) 2013 VVSiz"
   exit
 }
 
@@ -120,7 +130,10 @@ opts.separator "    ruby dsl2mobi.rb -i in.dsl -o result_dir -w forms-EN.txt"
 opts.separator "    Converts in.dsl file into result_dir directory, with English wordforms."
 
 rest = opts.parse(*ARGV)
-$stderr.puts "WARNING: Some options are not recognized: \"#{rest.join(', ')}\"" unless (rest.empty?)
+if !rest.empty?
+  $stderr.puts "ERROR: Some options are not recognized: \"#{rest.join(', ')}\""
+  exit(1)
+end
 
 unless $DSL_FILE
   $stderr.puts "ERROR: Input DSL file is not specified"
@@ -129,7 +142,8 @@ unless $DSL_FILE
   exit
 end
 
-$stderr.puts "INFO: Headwords transliteration: #{$TRANSLITERATE}"
+$stderr.puts "INFO: Russian headwords transliteration: #{$TRANSLITERATE}"
+$stderr.puts "INFO: Chinese headwords transliteration (Penyin): #{$PENYIN}"
 $stderr.puts "INFO: DSL Tags normalization: #{$NORMALIZE_TAGS}"
 $stderr.puts "INFO: Reference arrows in HTML: #{$HREF_ARROWS}"
 
@@ -195,6 +209,14 @@ class Card
           io.puts %Q{<idx:orth value="#{trans.gsub(/"/, '')}"/>}
         end
     end
+    
+    if ($PENYIN)
+        trans = Pinyin.t(hwd, '')
+        if (trans != hwd)
+          io.puts %Q{<idx:orth value="#{trans.gsub(/"/, '')}"/>}
+        end
+    end
+    
 
     # handle body
     @body.each { |line|

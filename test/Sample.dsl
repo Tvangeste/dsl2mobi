@@ -2,6 +2,12 @@
 #INDEX_LANGUAGE	"English"
 #CONTENTS_LANGUAGE	"Russian"
 
+病毒学
+ Commercial Press. 新华词典.
+ 
+感谢party, 感谢guo家!
+  节操
+ 
 hwd1 (with brackets)
   hwd1 (with brackets)
 

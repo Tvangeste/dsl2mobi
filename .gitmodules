@@ -1,0 +1,3 @@
+[submodule "lib/chinese_pinyin"]
+	path = lib/chinese_pinyin
+	url = git://github.com/flyerhzm/chinese_pinyin.git
